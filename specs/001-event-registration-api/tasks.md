@@ -80,17 +80,17 @@
 
 ### Tests for User Story 2
 
-- [ ] T025 [P] [US2] Implement registration contract tests for POST /events/:eventId/registrations in tests/contract/registrations.api.test.ts
-- [ ] T026 [P] [US2] Implement registration service unit tests for past-event, capacity, and duplicate rules in tests/unit/registration.service.test.ts
+- [X] T025 [P] [US2] Implement registration contract tests for POST /events/:eventId/registrations in tests/contract/registrations.api.test.ts
+- [X] T026 [P] [US2] Implement registration service unit tests for past-event, capacity, and duplicate rules in tests/unit/registration.service.test.ts
 
 ### Implementation for User Story 2
 
-- [ ] T027 [P] [US2] Define registration request/response types and validators in src/modules/registrations/registration.types.ts
-- [ ] T028 [US2] Implement attendee lookup/create and registration queries in src/modules/registrations/registration.repository.ts
-- [ ] T029 [US2] Implement transactional registration business logic in src/modules/registrations/registration.service.ts
-- [ ] T030 [US2] Implement registration create handler in src/modules/registrations/registration.controller.ts
-- [ ] T031 [US2] Implement registration create route in src/modules/registrations/registration.routes.ts
-- [ ] T032 [US2] Mount registration routes and enforce middleware ordering for validation and abuse controls in src/app.ts
+- [X] T027 [P] [US2] Define registration request/response types and validators in src/modules/registrations/registration.types.ts
+- [X] T028 [US2] Implement attendee lookup/create and registration queries in src/modules/registrations/registration.repository.ts
+- [X] T029 [US2] Implement transactional registration business logic in src/modules/registrations/registration.service.ts
+- [X] T030 [US2] Implement registration create handler in src/modules/registrations/registration.controller.ts
+- [X] T031 [US2] Implement registration create route in src/modules/registrations/registration.routes.ts
+- [X] T032 [US2] Mount registration routes and enforce middleware ordering for validation and abuse controls in src/app.ts
 
 **Checkpoint**: User Stories 1 and 2 are independently functional and testable.
 

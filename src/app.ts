@@ -5,6 +5,7 @@ import { errorHandler, notFoundHandler } from './middleware/error-handler';
 import { rateLimitMiddleware } from './middleware/rate-limit';
 import { requestSizeMiddleware } from './middleware/request-size';
 import { eventRouter } from './modules/events';
+import { registrationRouter } from './modules/registrations';
 
 export const createApp = (): Express => {
   const app = express();
@@ -22,6 +23,7 @@ export const createApp = (): Express => {
   });
 
   app.use('/events', eventRouter);
+  app.use('/events/:eventId/registrations', registrationRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);
