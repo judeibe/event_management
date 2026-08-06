@@ -129,6 +129,54 @@ describe('Registration API contract', () => {
     expect(response.body.error.code).toBe('PAYLOAD_TOO_LARGE');
   });
 
+  it('unregisters an attendee and reconciles occupancy for the event', async () => {
+    const event = await createEvent('2030-07-21T18:00:00.000Z', 3);
+    const attendeeRef = 'attendee-unregister@example.com';
+
+    const registrationResponse = await request(app).post(`/events/${event.id}/registrations`).send({
+      attendeeRef,
+    });
+    expect(registrationResponse.status).toBe(201);
+
+    const unregisterResponse = await request(app).delete(
+      `/events/${event.id}/registrations/${encodeURIComponent(attendeeRef)}`,
+    );
+
+    expect(unregisterResponse.status).toBe(204);
+
+    const storedEvent = await prisma.event.findUnique({ where: { id: event.id } });
+    expect(storedEvent?.currentRegistrations).toBe(0);
+
+    const attendee = await prisma.attendee.findUnique({ where: { externalRef: attendeeRef } });
+    expect(attendee).toBeDefined();
+    expect(attendee).not.toBeNull();
+
+    if (!attendee) {
+      throw new Error('Expected attendee to exist after registration');
+    }
+
+    const registration = await prisma.registration.findFirst({
+      where: {
+        attendeeId: attendee.id,
+        eventId: event.id,
+      },
+    });
+
+    expect(registration?.status).toBe('CANCELLED');
+    expect(registration?.cancelledAt).toBeTruthy();
+  });
+
+  it('returns 404 when attempting to unregister a non-existent active registration', async () => {
+    const event = await createEvent('2030-07-21T18:00:00.000Z', 3);
+
+    const response = await request(app).delete(
+      `/events/${event.id}/registrations/${encodeURIComponent('missing-attendee@example.com')}`,
+    );
+
+    expect(response.status).toBe(404);
+    expect(response.body.error.code).toBe('NOT_FOUND');
+  });
+
   it('returns throttling response when request volume exceeds configured limit', async () => {
     const event = await createEvent('2030-07-21T18:00:00.000Z', 500);
     let throttledResponse: any;

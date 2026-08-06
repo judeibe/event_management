@@ -53,9 +53,13 @@ const createRepositoryMock = (): RegistrationRepositoryMockBundle => {
   const transactionRepository: RegistrationTransactionRepository = {
     findEventById: vi.fn(),
     getOrCreateAttendeeByExternalRef: vi.fn(),
+    findAttendeeByExternalRef: vi.fn(),
     findActiveRegistration: vi.fn(),
     createRegistration: vi.fn(),
     incrementEventRegistrationsIfCapacityAvailable: vi.fn(),
+    cancelRegistrationById: vi.fn(),
+    countActiveRegistrationsForEvent: vi.fn(),
+    setEventCurrentRegistrations: vi.fn(),
     findRegistrationById: vi.fn(),
   };
 
@@ -157,5 +161,59 @@ describe('RegistrationService', () => {
       ConflictError,
     );
     expect(transactionRepository.createRegistration).not.toHaveBeenCalled();
+  });
+
+  it('unregisters an active attendee registration and reconciles event occupancy', async () => {
+    const { repository, transactionRepository } = createRepositoryMock();
+    const event = buildEvent({ currentRegistrations: 2 });
+    const attendee = buildAttendee();
+    const activeRegistration = buildRegistration();
+
+    vi.mocked(transactionRepository.findEventById).mockResolvedValue(event);
+    vi.mocked(transactionRepository.findAttendeeByExternalRef).mockResolvedValue(attendee);
+    vi.mocked(transactionRepository.findActiveRegistration).mockResolvedValue(activeRegistration);
+    vi.mocked(transactionRepository.cancelRegistrationById).mockResolvedValue(
+      buildRegistration({ status: 'CANCELLED', cancelledAt: new Date('2026-01-01T00:01:00.000Z') }),
+    );
+    vi.mocked(transactionRepository.countActiveRegistrationsForEvent).mockResolvedValue(1);
+    vi.mocked(transactionRepository.setEventCurrentRegistrations).mockResolvedValue(undefined);
+
+    const service = new RegistrationService(repository);
+
+    await service.unregisterRegistration(event.id, ' attendee@example.com ');
+
+    expect(transactionRepository.findAttendeeByExternalRef).toHaveBeenCalledWith('attendee@example.com');
+    expect(transactionRepository.cancelRegistrationById).toHaveBeenCalledWith(activeRegistration.id);
+    expect(transactionRepository.countActiveRegistrationsForEvent).toHaveBeenCalledWith(event.id);
+    expect(transactionRepository.setEventCurrentRegistrations).toHaveBeenCalledWith(event.id, 1);
+  });
+
+  it('rejects unregister when the event does not exist', async () => {
+    const { repository, transactionRepository } = createRepositoryMock();
+
+    vi.mocked(transactionRepository.findEventById).mockResolvedValue(null);
+
+    const service = new RegistrationService(repository);
+
+    await expect(
+      service.unregisterRegistration('f3f5233b-f6f6-494f-9e0e-5b5b4df47f8f', 'attendee@example.com'),
+    ).rejects.toBeInstanceOf(NotFoundError);
+  });
+
+  it('rejects unregister when no active registration exists for attendee and event', async () => {
+    const { repository, transactionRepository } = createRepositoryMock();
+    const event = buildEvent();
+    const attendee = buildAttendee();
+
+    vi.mocked(transactionRepository.findEventById).mockResolvedValue(event);
+    vi.mocked(transactionRepository.findAttendeeByExternalRef).mockResolvedValue(attendee);
+    vi.mocked(transactionRepository.findActiveRegistration).mockResolvedValue(null);
+
+    const service = new RegistrationService(repository);
+
+    await expect(service.unregisterRegistration(event.id, attendee.externalRef)).rejects.toBeInstanceOf(
+      NotFoundError,
+    );
+    expect(transactionRepository.cancelRegistrationById).not.toHaveBeenCalled();
   });
 });

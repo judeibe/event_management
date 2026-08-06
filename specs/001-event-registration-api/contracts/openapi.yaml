@@ -9,6 +9,27 @@ tags:
   - name: Events
   - name: Registrations
 paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  timestamp:
+                    type: string
+                    format: date-time
+                required: [status, timestamp]
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+
   /events:
     get:
       tags: [Events]
@@ -72,6 +93,8 @@ paths:
                   data:
                     $ref: "#/components/schemas/Event"
                 required: [data]
+        "400":
+          $ref: "#/components/responses/ValidationError"
         "404":
           $ref: "#/components/responses/NotFound"
         "429":
@@ -114,6 +137,8 @@ paths:
       parameters:
         - $ref: "#/components/parameters/EventId"
       responses:
+        "400":
+          $ref: "#/components/responses/ValidationError"
         "204":
           description: Event deleted
         "404":
@@ -166,13 +191,14 @@ paths:
           required: true
           schema:
             type: string
+            minLength: 1
       responses:
+        "400":
+          $ref: "#/components/responses/ValidationError"
         "204":
           description: Registration removed
         "404":
           $ref: "#/components/responses/NotFound"
-        "409":
-          $ref: "#/components/responses/ConflictError"
         "429":
           $ref: "#/components/responses/TooManyRequests"
 

@@ -104,15 +104,15 @@
 
 ### Tests for User Story 3
 
-- [ ] T033 [P] [US3] Extend registration contract tests for DELETE /events/:eventId/registrations/:attendeeRef in tests/contract/registrations.api.test.ts
-- [ ] T034 [P] [US3] Extend registration service unit tests for unregister state transitions in tests/unit/registration.service.test.ts
+- [X] T033 [P] [US3] Extend registration contract tests for DELETE /events/:eventId/registrations/:attendeeRef in tests/contract/registrations.api.test.ts
+- [X] T034 [P] [US3] Extend registration service unit tests for unregister state transitions in tests/unit/registration.service.test.ts
 
 ### Implementation for User Story 3
 
-- [ ] T035 [US3] Implement unregister data access updates in src/modules/registrations/registration.repository.ts
-- [ ] T036 [US3] Implement unregister business logic and occupancy reconciliation in src/modules/registrations/registration.service.ts
-- [ ] T037 [US3] Implement unregister handler in src/modules/registrations/registration.controller.ts
-- [ ] T038 [US3] Implement unregister route in src/modules/registrations/registration.routes.ts
+- [X] T035 [US3] Implement unregister data access updates in src/modules/registrations/registration.repository.ts
+- [X] T036 [US3] Implement unregister business logic and occupancy reconciliation in src/modules/registrations/registration.service.ts
+- [X] T037 [US3] Implement unregister handler in src/modules/registrations/registration.controller.ts
+- [X] T038 [US3] Implement unregister route in src/modules/registrations/registration.routes.ts
 
 **Checkpoint**: All user stories are independently functional and testable.
 
@@ -122,11 +122,11 @@
 
 **Purpose**: Final contract alignment, observability, and end-to-end validation.
 
-- [ ] T039 [P] Add seed utility for local validation data in src/db/seed.ts
-- [ ] T040 [P] Add request and abuse-event logging hooks in src/middleware/rate-limit.ts and src/middleware/request-size.ts
-- [ ] T041 Reconcile endpoint/error contract details in specs/001-event-registration-api/contracts/openapi.yaml
-- [ ] T042 Update run/validation guidance and command expectations in specs/001-event-registration-api/quickstart.md
-- [ ] T043 Execute full test suite and fix regressions in tests/unit/ and tests/contract/
+- [X] T039 [P] Add seed utility for local validation data in src/db/seed.ts
+- [X] T040 [P] Add request and abuse-event logging hooks in src/middleware/rate-limit.ts and src/middleware/request-size.ts
+- [X] T041 Reconcile endpoint/error contract details in specs/001-event-registration-api/contracts/openapi.yaml
+- [X] T042 Update run/validation guidance and command expectations in specs/001-event-registration-api/quickstart.md
+- [X] T043 Execute full test suite and fix regressions in tests/unit/ and tests/contract/
 
 ---
 

@@ -16,7 +16,9 @@ This guide validates the feature end-to-end against the contract and business ru
    - `npx prisma generate`
 3. Apply database schema:
    - `npx prisma migrate dev --name init`
-4. Start API:
+4. Seed local validation data:
+   - `npm run db:seed`
+5. Start API:
    - `npm run dev`
 
 ## Contract Reference
@@ -50,15 +52,17 @@ This guide validates the feature end-to-end against the contract and business ru
    - Send payload larger than configured limit.
    - Expected: throttled requests return `429`; oversize payload returns `413`.
 
-## Test Commands
+## Validation Commands
 
-- Run unit tests (business logic):
-  - `npm test -- --runInBand`
-- Run targeted contract/API tests:
-  - `npm test -- tests/contract`
+- Run full TypeScript validation:
+  - `npm run typecheck`
+- Run full automated test suite (unit + contract):
+  - `npm test`
 
 ## Expected Outcomes
 
 - Event and registration flows satisfy all functional requirements in `spec.md`.
 - Contract tests align with `openapi.yaml`.
 - Abuse controls are enforced with explicit error outcomes.
+- `npm run typecheck` exits with code `0`.
+- `npm test` exits with code `0` and all tests passing.

@@ -36,9 +36,13 @@ export interface CreateRegistrationInput {
 export interface RegistrationTransactionRepository {
   findEventById(eventId: string): Promise<RegistrationEventEntity | null>;
   getOrCreateAttendeeByExternalRef(externalRef: string): Promise<AttendeeEntity>;
+  findAttendeeByExternalRef(externalRef: string): Promise<AttendeeEntity | null>;
   findActiveRegistration(eventId: string, attendeeId: string): Promise<RegistrationEntity | null>;
   createRegistration(input: CreateRegistrationInput): Promise<RegistrationEntity>;
   incrementEventRegistrationsIfCapacityAvailable(eventId: string): Promise<boolean>;
+  cancelRegistrationById(registrationId: string): Promise<RegistrationEntity>;
+  countActiveRegistrationsForEvent(eventId: string): Promise<number>;
+  setEventCurrentRegistrations(eventId: string, currentRegistrations: number): Promise<void>;
   findRegistrationById(registrationId: string): Promise<RegistrationWithAttendeeEntity | null>;
 }
 
@@ -68,6 +72,17 @@ class PrismaRegistrationTransactionRepository implements RegistrationTransaction
       where: { externalRef },
       create: { externalRef },
       update: {},
+      select: {
+        id: true,
+        externalRef: true,
+        createdAt: true,
+      },
+    });
+  }
+
+  public async findAttendeeByExternalRef(externalRef: string): Promise<AttendeeEntity | null> {
+    return this.client.attendee.findUnique({
+      where: { externalRef },
       select: {
         id: true,
         externalRef: true,
@@ -115,6 +130,35 @@ class PrismaRegistrationTransactionRepository implements RegistrationTransaction
     });
 
     return result.count === 1;
+  }
+
+  public async cancelRegistrationById(registrationId: string): Promise<RegistrationEntity> {
+    return this.client.registration.update({
+      where: { id: registrationId },
+      data: {
+        status: 'CANCELLED',
+        cancelledAt: new Date(),
+      },
+    });
+  }
+
+  public async countActiveRegistrationsForEvent(eventId: string): Promise<number> {
+    return this.client.registration.count({
+      where: {
+        eventId,
+        status: 'ACTIVE',
+      },
+    });
+  }
+
+  public async setEventCurrentRegistrations(
+    eventId: string,
+    currentRegistrations: number,
+  ): Promise<void> {
+    await this.client.event.update({
+      where: { id: eventId },
+      data: { currentRegistrations },
+    });
   }
 
   public async findRegistrationById(

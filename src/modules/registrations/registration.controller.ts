@@ -5,6 +5,7 @@ import { PrismaRegistrationRepository } from './registration.repository';
 import { RegistrationService } from './registration.service';
 import {
   registrationEventIdParamsSchema,
+  unregisterRegistrationParamsSchema,
   mapRegistrationToResponse,
   type CreateRegistrationBody,
 } from './registration.types';
@@ -33,6 +34,26 @@ export class RegistrationController {
       );
 
       response.status(201).json({ data: mapRegistrationToResponse(registration) });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public readonly unregisterRegistration: RequestHandler = async (request, response, next) => {
+    try {
+      const parsed = unregisterRegistrationParamsSchema.safeParse({
+        attendeeRef: request.params.attendeeRef,
+        eventId: request.params.eventId,
+      });
+
+      if (!parsed.success) {
+        throw new ValidationError('Request validation failed.', {
+          issues: parsed.error.issues,
+        });
+      }
+
+      await this.service.unregisterRegistration(parsed.data.eventId, parsed.data.attendeeRef);
+      response.status(204).send();
     } catch (error) {
       next(error);
     }

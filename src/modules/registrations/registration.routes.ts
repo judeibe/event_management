@@ -11,3 +11,4 @@ registrationRouter.post(
   validateRequest(createRegistrationBodySchema),
   registrationController.createRegistration,
 );
+registrationRouter.delete('/:attendeeRef', registrationController.unregisterRegistration);

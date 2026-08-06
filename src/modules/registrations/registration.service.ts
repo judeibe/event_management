@@ -36,6 +36,14 @@ export class RegistrationService {
     }
   }
 
+  public async unregisterRegistration(eventId: string, attendeeRefInput: string): Promise<void> {
+    const attendeeRef = attendeeRefInput.trim();
+
+    await this.repository.withTransaction(async (transactionRepository) =>
+      this.unregisterRegistrationInTransaction(eventId, attendeeRef, transactionRepository),
+    );
+  }
+
   private async createRegistrationInTransaction(
     eventId: string,
     attendeeRef: string,
@@ -86,5 +94,39 @@ export class RegistrationService {
     }
 
     return registrationWithAttendee;
+  }
+
+  private async unregisterRegistrationInTransaction(
+    eventId: string,
+    attendeeRef: string,
+    repository: RegistrationTransactionRepository,
+  ): Promise<void> {
+    const event = await repository.findEventById(eventId);
+
+    if (!event) {
+      throw new NotFoundError(`Event ${eventId} was not found.`, { eventId });
+    }
+
+    const attendee = await repository.findAttendeeByExternalRef(attendeeRef);
+
+    if (!attendee) {
+      throw new NotFoundError('No active registration exists for this attendee and event.', {
+        attendeeRef,
+        eventId,
+      });
+    }
+
+    const activeRegistration = await repository.findActiveRegistration(eventId, attendee.id);
+
+    if (!activeRegistration) {
+      throw new NotFoundError('No active registration exists for this attendee and event.', {
+        attendeeRef,
+        eventId,
+      });
+    }
+
+    await repository.cancelRegistrationById(activeRegistration.id);
+    const activeRegistrations = await repository.countActiveRegistrationsForEvent(eventId);
+    await repository.setEventCurrentRegistrations(eventId, activeRegistrations);
   }
 }
