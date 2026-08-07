@@ -17,8 +17,7 @@
     "test:watch": "vitest watch",
     "prisma:generate": "prisma generate",
     "prisma:migrate:dev": "prisma migrate dev",
-    "db:seed": "tsx --env-file=.env src/db/seed.ts",
-    "validate:api": "tsx scripts/validate-api.ts --base-url=http://localhost:3000"
+    "db:seed": "tsx --env-file=.env src/db/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "5.19.1",
