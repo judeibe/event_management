@@ -11,6 +11,6 @@
             "command": "npm run dev",
             "cwd": "${workspaceFolder}",
             "envFile": "${workspaceFolder}/.env"
-        }
+        },
     ]
 }
