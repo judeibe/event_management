@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"name": "✨ event-management",
+			"path": "."
+		},
+		{
+			"name": "🚀 @event-management/api",
+			"path": "./apps/api"
+		},
+		{
+			"name": "🚀 @event-management/web",
+			"path": "./apps/web"
+		}
+	]
+}

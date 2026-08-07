@@ -1,0 +1,93 @@
+contractVersion: 1
+name: api-validation-security-runner
+description: Contract for the developer/CI command that validates API functionality and security checks.
+
+command:
+  name: validate-api
+  summary: Execute required API functional and security validations in one run.
+  invocationExamples:
+    - "npm run validate:api"
+    - "npm run validate:api -- --base-url=http://localhost:3000"
+  inputs:
+    - name: baseUrl
+      required: true
+      description: Base URL for the API under test.
+    - name: mode
+      required: false
+      allowedValues: [full, functional, security]
+      default: full
+      description: Validation subset to execute.
+    - name: output
+      required: false
+      allowedValues: [human, json]
+      default: human
+      description: Output format.
+
+prerequisites:
+  - API is reachable at provided base URL.
+  - Required test environment variables are available.
+  - Required check definitions are available to runner.
+
+output:
+  sections:
+    - header
+    - functionalSummary
+    - securitySummary
+    - failureDetails
+    - overallResult
+  requiredFields:
+    - runId
+    - overallStatus
+    - totalChecks
+    - passedChecks
+    - failedChecks
+    - functionalStatus
+    - securityStatus
+
+exitCodes:
+  success:
+    code: 0
+    meaning: All required checks passed.
+  validationFailure:
+    code: 1
+    meaning: One or more required checks failed.
+  executionError:
+    code: 2
+    meaning: Runner could not complete due to prerequisite or runtime error.
+
+requiredCheckGroups:
+  - functional
+  - security
+
+failureSemantics:
+  - Any failed required check sets overallStatus to FAIL.
+  - Missing prerequisites set overallStatus to ERROR.
+  - Required group omission is treated as ERROR.
+
+parityNotes:
+  - Runner MUST separate functional and security summaries in both human and JSON output.
+  - Runner MUST include actionable failure context when overallStatus is FAIL or ERROR.
+  - Runner MUST exit non-success when any required check fails.
+
+examples:
+  passSummary:
+    overallStatus: PASS
+    totalChecks: 2
+    passedChecks: 2
+    failedChecks: 0
+    functionalStatus: PASS
+    securityStatus: PASS
+  failSummary:
+    overallStatus: FAIL
+    totalChecks: 2
+    passedChecks: 1
+    failedChecks: 1
+    functionalStatus: PASS
+    securityStatus: FAIL
+  errorSummary:
+    overallStatus: ERROR
+    totalChecks: 0
+    passedChecks: 0
+    failedChecks: 0
+    functionalStatus: SKIPPED
+    securityStatus: SKIPPED
