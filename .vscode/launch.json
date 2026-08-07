@@ -6,11 +6,11 @@
     "configurations": [
         {
             "type": "node-terminal",
-            "name": "Run Script: dev",
+            "name": "Run Script: api dev",
             "request": "launch",
-            "command": "npm run dev",
-            "cwd": "${workspaceFolder}",
-            "envFile": "${workspaceFolder}/.env"
+            "command": "pnpm dev",
+            "cwd": "${workspaceFolder}/apps/api",
+            "envFile": "${workspaceFolder}/apps/api/.env"
         },
     ]
 }

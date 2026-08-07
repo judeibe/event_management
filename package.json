@@ -1,41 +1,26 @@
 {
-  "name": "event_managment_api",
+  "name": "event-management",
   "version": "0.1.0",
   "private": true,
-  "description": "Event and attendee registration management API",
+  "description": "Event management monorepo: API and web app",
   "engines": {
     "node": ">=20"
   },
+  "packageManager": "pnpm@10.33.2",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "build": "tsc --project tsconfig.json",
-    "start": "node dist/server.js",
-    "typecheck": "tsc --noEmit --project tsconfig.json",
-    "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix",
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "start": "turbo run start",
+    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "vitest run",
-    "test:watch": "vitest watch",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate:dev": "prisma migrate dev",
-    "db:seed": "tsx src/db/seed.ts",
-    "validate:api": "tsx scripts/validate-api.ts --base-url=http://localhost:3000"
-  },
-  "dependencies": {
-    "@prisma/client": "5.19.1",
-    "express": "4.21.2",
-    "express-rate-limit": "7.4.1",
-    "helmet": "7.1.0",
-    "zod": "3.23.8"
+    "test": "turbo run test",
+    "test:watch": "turbo run test:watch"
   },
   "devDependencies": {
-    "@types/express": "4.17.21",
-    "@types/node": "22.10.1",
-    "prisma": "5.19.1",
-    "supertest": "7.0.0",
-    "tsx": "4.19.1",
-    "typescript": "5.6.3",
-    "vitest": "2.1.1"
+    "prettier": "3.3.3",
+    "turbo": "2.10.8"
   }
 }
