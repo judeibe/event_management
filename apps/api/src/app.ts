@@ -1,9 +1,9 @@
 import express, { type Express } from 'express';
 import helmet from 'helmet';
 
-import { errorHandler, notFoundHandler } from './middleware/error-handler';
-import { rateLimitMiddleware } from './middleware/rate-limit';
-import { requestSizeMiddleware } from './middleware/request-size';
+import { errorHandler, notFoundHandler } from '@/middleware/error-handler';
+import { rateLimitMiddleware } from '@/middleware/rate-limit';
+import { requestSizeMiddleware } from '@/middleware/request-size';
 import { eventRouter } from './modules/events';
 import { registrationRouter } from './modules/registrations';
 

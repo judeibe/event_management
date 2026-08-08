@@ -15,7 +15,14 @@
     "sourceMap": true,
     "rootDir": ".",
     "outDir": "dist",
-    "types": ["node", "vitest/globals"]
+    "types": ["node", "vitest/globals"],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/generated/*": ["./generated/*"],
+      "@/db/*": ["./src/db/*"],
+      "@/shared/*": ["./src/shared/*"],
+      "@/middleware/*": ["./src/middleware/*"],
+    }
   },
   "include": ["scripts/**/*.ts", "src/**/*.ts", "tests/**/*.ts"],
   "exclude": ["dist", "node_modules"]

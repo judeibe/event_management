@@ -1,7 +1,7 @@
 import { app } from './app';
 import { env } from './config/env';
-import { connectToDatabase, setupPrismaLifecycleHooks } from './db/client';
-import { logger } from './shared/logger';
+import { connectToDatabase, setupPrismaLifecycleHooks } from '@/db/client';
+import { logger } from '@/shared/logger';
 
 const startServer = async (): Promise<void> => {
   setupPrismaLifecycleHooks();

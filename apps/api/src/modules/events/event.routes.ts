@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { validateRequest } from '../../middleware/request-validation';
+import { validateRequest } from '@/middleware/request-validation';
 import { eventController } from './event.controller';
 import { createEventBodySchema, updateEventBodySchema } from './event.types';
 

@@ -1,6 +1,6 @@
-import { Prisma } from '@prisma/client';
+import { Prisma} from "@/generated/prisma/client";
 
-import { ConflictError, NotFoundError } from '../../shared/errors';
+import { ConflictError, NotFoundError } from '@/shared/errors';
 import type { CreateRegistrationBody } from './registration.types';
 import type {
   RegistrationRepository,

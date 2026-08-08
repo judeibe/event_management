@@ -1,4 +1,4 @@
-import { ConflictError, NotFoundError } from '../../shared/errors';
+import { ConflictError, NotFoundError } from '@/shared/errors';
 import type { EventEntity, EventRepository } from './event.repository';
 import type { CreateEventBody, UpdateEventBody } from './event.types';
 
@@ -11,6 +11,10 @@ export class EventService {
       description: input.description.trim(),
       eventDate: new Date(input.eventDate),
       maxCapacity: input.maxCapacity,
+      category: input.category.trim(),
+      location: input.location.trim(),
+      price: input.price,
+      imageUrl: input.imageUrl.trim(),
     });
   }
 
@@ -53,6 +57,10 @@ export class EventService {
       ...(input.description !== undefined ? { description: input.description.trim() } : {}),
       ...(input.eventDate !== undefined ? { eventDate: new Date(input.eventDate) } : {}),
       ...(input.maxCapacity !== undefined ? { maxCapacity: input.maxCapacity } : {}),
+      ...(input.category !== undefined ? { category: input.category.trim() } : {}),
+      ...(input.location !== undefined ? { location: input.location.trim() } : {}),
+      ...(input.price !== undefined ? { price: input.price } : {}),
+      ...(input.imageUrl !== undefined ? { imageUrl: input.imageUrl.trim() } : {}),
     };
 
     return this.repository.updateById(eventId, updateInput);

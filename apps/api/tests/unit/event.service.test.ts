@@ -11,6 +11,10 @@ const buildEvent = (overrides: Partial<EventEntity> = {}): EventEntity => ({
   eventDate: new Date('2027-01-10T10:00:00.000Z'),
   maxCapacity: 100,
   currentRegistrations: 0,
+  category: 'Business',
+  location: 'HQ Conference Center, San Francisco, CA',
+  price: 40,
+  imageUrl: 'https://picsum.photos/seed/event-title/800/600',
   createdAt: new Date('2026-01-01T00:00:00.000Z'),
   updatedAt: new Date('2026-01-01T00:00:00.000Z'),
   ...overrides,
@@ -38,6 +42,10 @@ describe('EventService', () => {
       description: '  Community meetup  ',
       eventDate: '2027-01-10T10:00:00.000Z',
       maxCapacity: 150,
+      category: '  Music  ',
+      location: '  Sunset Park, Los Angeles, CA  ',
+      price: 50,
+      imageUrl: '  https://picsum.photos/seed/launch-party/800/600  ',
     });
 
     expect(repository.create).toHaveBeenCalledWith({
@@ -45,6 +53,10 @@ describe('EventService', () => {
       description: 'Community meetup',
       eventDate: new Date('2027-01-10T10:00:00.000Z'),
       maxCapacity: 150,
+      category: 'Music',
+      location: 'Sunset Park, Los Angeles, CA',
+      price: 50,
+      imageUrl: 'https://picsum.photos/seed/launch-party/800/600',
     });
     expect(result).toEqual(created);
   });

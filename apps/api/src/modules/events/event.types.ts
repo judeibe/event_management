@@ -1,4 +1,5 @@
-import type { Event as EventModel } from '@prisma/client';
+import type { Event as EventModel } from '@/generated/prisma/client';
+import type { EventResponse } from '@event-management/shared';
 import { z } from 'zod';
 
 const nonEmptyTrimmedString = z.string().trim().min(1);
@@ -12,6 +13,10 @@ export const createEventBodySchema = z.object({
   description: nonEmptyTrimmedString,
   eventDate: z.string().datetime(),
   maxCapacity: z.number().int().positive(),
+  category: nonEmptyTrimmedString,
+  location: nonEmptyTrimmedString,
+  price: z.number().nonnegative(),
+  imageUrl: z.string().trim().url(),
 });
 
 export const updateEventBodySchema =
@@ -23,14 +28,7 @@ export type EventIdParams = z.infer<typeof eventIdParamsSchema>;
 export type CreateEventBody = z.infer<typeof createEventBodySchema>;
 export type UpdateEventBody = z.infer<typeof updateEventBodySchema>;
 
-export interface EventResponse {
-  readonly id: string;
-  readonly title: string;
-  readonly description: string;
-  readonly eventDate: string;
-  readonly maxCapacity: number;
-  readonly currentRegistrations: number;
-}
+export type { EventResponse } from '@event-management/shared';
 
 export const mapEventToResponse = (event: EventModel): EventResponse => ({
   id: event.id,
@@ -39,4 +37,8 @@ export const mapEventToResponse = (event: EventModel): EventResponse => ({
   eventDate: event.eventDate.toISOString(),
   maxCapacity: event.maxCapacity,
   currentRegistrations: event.currentRegistrations,
+  category: event.category,
+  location: event.location,
+  price: event.price,
+  imageUrl: event.imageUrl,
 });

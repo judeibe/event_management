@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { validateRequest } from '../../middleware/request-validation';
+import { validateRequest } from '@/middleware/request-validation';
 import { registrationController } from './registration.controller';
 import { createRegistrationBodySchema } from './registration.types';
 

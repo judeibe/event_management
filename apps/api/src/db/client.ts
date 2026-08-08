@@ -1,4 +1,5 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaClient, Prisma} from "@/generated/prisma/client";
 
 import { env } from '../config/env';
 import { logger } from '../shared/logger';
@@ -8,10 +9,13 @@ const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 const prismaLogs: Prisma.LogLevel[] =
   env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['warn', 'error'];
 
+const adapter = new PrismaBetterSqlite3({ url: env.DATABASE_URL });
+
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
     log: prismaLogs,
+    adapter,
   });
 
 if (env.NODE_ENV !== 'production') {

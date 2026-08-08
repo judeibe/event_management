@@ -1,10 +1,14 @@
-import { prisma } from '../../db/client';
+import { prisma } from '@/db/client';
 
 export interface CreateEventInput {
   readonly title: string;
   readonly description: string;
   readonly eventDate: Date;
   readonly maxCapacity: number;
+  readonly category: string;
+  readonly location: string;
+  readonly price: number;
+  readonly imageUrl: string;
 }
 
 export interface UpdateEventInput {
@@ -12,6 +16,10 @@ export interface UpdateEventInput {
   readonly description?: string;
   readonly eventDate?: Date;
   readonly maxCapacity?: number;
+  readonly category?: string;
+  readonly location?: string;
+  readonly price?: number;
+  readonly imageUrl?: string;
 }
 
 export interface EventEntity {
@@ -21,6 +29,10 @@ export interface EventEntity {
   readonly eventDate: Date;
   readonly maxCapacity: number;
   readonly currentRegistrations: number;
+  readonly category: string;
+  readonly location: string;
+  readonly price: number;
+  readonly imageUrl: string;
   readonly createdAt: Date;
   readonly updatedAt: Date;
 }
@@ -42,6 +54,10 @@ export class PrismaEventRepository implements EventRepository {
         description: input.description,
         eventDate: input.eventDate,
         maxCapacity: input.maxCapacity,
+        category: input.category,
+        location: input.location,
+        price: input.price,
+        imageUrl: input.imageUrl,
       },
     });
   }
@@ -64,6 +80,10 @@ export class PrismaEventRepository implements EventRepository {
       ...(input.description !== undefined ? { description: input.description } : {}),
       ...(input.eventDate !== undefined ? { eventDate: input.eventDate } : {}),
       ...(input.maxCapacity !== undefined ? { maxCapacity: input.maxCapacity } : {}),
+      ...(input.category !== undefined ? { category: input.category } : {}),
+      ...(input.location !== undefined ? { location: input.location } : {}),
+      ...(input.price !== undefined ? { price: input.price } : {}),
+      ...(input.imageUrl !== undefined ? { imageUrl: input.imageUrl } : {}),
     };
 
     return prisma.event.update({

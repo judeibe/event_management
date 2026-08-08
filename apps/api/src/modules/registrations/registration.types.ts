@@ -1,3 +1,4 @@
+import type { RegistrationResponse } from '@event-management/shared';
 import { z } from 'zod';
 
 export const registrationEventIdParamsSchema = z.object({
@@ -17,12 +18,7 @@ export type RegistrationEventIdParams = z.infer<typeof registrationEventIdParams
 export type UnregisterRegistrationParams = z.infer<typeof unregisterRegistrationParamsSchema>;
 export type CreateRegistrationBody = z.infer<typeof createRegistrationBodySchema>;
 
-export interface RegistrationResponse {
-  readonly id: string;
-  readonly eventId: string;
-  readonly attendeeRef: string;
-  readonly status: 'ACTIVE' | 'CANCELLED';
-}
+export type { RegistrationResponse } from '@event-management/shared';
 
 export interface RegistrationResponseSource {
   readonly id: string;

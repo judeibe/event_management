@@ -6,11 +6,18 @@
 		},
 		{
 			"name": "🚀 @event-management/api",
-			"path": "./apps/api"
+			"path": "apps/api"
 		},
 		{
 			"name": "🚀 @event-management/web",
-			"path": "./apps/web"
+			"path": "apps/web"
+		},
+		{
+			"name": "📦 @event-management/shared",
+			"path": "packages/shared"
 		}
-	]
+	],
+	"settings": {
+		"js/ts.tsdk.path": "🚀 @event-management/api/node_modules/typescript/lib"
+	}
 }

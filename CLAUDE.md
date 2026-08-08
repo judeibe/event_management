@@ -21,7 +21,7 @@ pnpm install                  # install once from the root — never run npm/yar
 pnpm dev                      # turbo run dev — api on :3000, web on :3001, in parallel
 pnpm build                    # turbo run build
 pnpm start                    # turbo run start (run build first)
-pnpm typecheck                # turbo run typecheck (api only — see note below)
+pnpm typecheck                # turbo run typecheck (api + packages/shared — see note below; web has no typecheck script)
 pnpm lint / lint:fix          # turbo run lint / lint:fix
 pnpm format / format:check    # prettier over the whole repo (not turbo — single pass at the root)
 pnpm test / test:watch        # turbo run test (api only — web has no tests yet)

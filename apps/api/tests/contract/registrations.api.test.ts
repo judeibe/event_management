@@ -1,5 +1,5 @@
 import type { Express } from 'express';
-import type { PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@/generated/prisma/client';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
 const testDatabaseUrl = 'file:./prisma/test.db';
@@ -17,6 +17,10 @@ const createEvent = async (
     description: 'Event used in registration tests',
     eventDate,
     maxCapacity,
+    category: 'Community',
+    location: 'Sunset Park, Los Angeles, CA',
+    price: 25,
+    imageUrl: 'https://picsum.photos/seed/registration-target-event/800/600',
   });
 
   expect(response.status).toBe(201);

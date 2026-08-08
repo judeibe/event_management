@@ -1,4 +1,5 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { prisma } from '@/db/client';
+import { PrismaClient, Prisma} from "@/generated/prisma/client";
 
 import { logger } from '../shared/logger';
 
@@ -6,8 +7,6 @@ if (!process.env.DATABASE_URL) {
   process.env.DATABASE_URL = 'file:./prisma/dev.db';
   logger.warn('DATABASE_URL was not set. Falling back to file:./prisma/dev.db for seeding.');
 }
-
-const prisma = new PrismaClient();
 
 const seedDatabase = async (): Promise<void> => {
   const now = new Date();
@@ -24,6 +23,10 @@ const seedDatabase = async (): Promise<void> => {
         description: 'Hands-on workshop for product planning and feedback.',
         eventDate: new Date(now.getTime() + 7 * oneDayMs),
         maxCapacity: 3,
+        category: 'Business',
+        location: 'HQ Conference Center, San Francisco, CA',
+        price: 40,
+        imageUrl: 'https://picsum.photos/seed/quarterly-product-workshop/800/600',
       },
     });
 
@@ -33,6 +36,10 @@ const seedDatabase = async (): Promise<void> => {
         description: 'Open forum for roadmap updates and Q&A.',
         eventDate: new Date(now.getTime() + 14 * oneDayMs),
         maxCapacity: 5,
+        category: 'Community',
+        location: 'Sunset Park, Los Angeles, CA',
+        price: 0,
+        imageUrl: 'https://picsum.photos/seed/community-town-hall/800/600',
       },
     });
 
@@ -42,6 +49,10 @@ const seedDatabase = async (): Promise<void> => {
         description: 'Historical event used for past-event registration checks.',
         eventDate: new Date(now.getTime() - 2 * oneDayMs),
         maxCapacity: 2,
+        category: 'Business',
+        location: 'HQ Conference Center, San Francisco, CA',
+        price: 25,
+        imageUrl: 'https://picsum.photos/seed/archived-session/800/600',
       },
     });
 

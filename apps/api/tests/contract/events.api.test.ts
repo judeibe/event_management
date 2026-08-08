@@ -1,5 +1,5 @@
 import type { Express } from 'express';
-import type { PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@/generated/prisma/client';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
 const testDatabaseUrl = 'file:./prisma/test.db';
@@ -48,6 +48,10 @@ describe('Event API contract', () => {
       description: 'Monthly event for contributors',
       eventDate: '2027-07-21T18:00:00.000Z',
       maxCapacity: 120,
+      category: 'Community',
+      location: 'Sunset Park, Los Angeles, CA',
+      price: 25,
+      imageUrl: 'https://picsum.photos/seed/community-meetup/800/600',
     });
 
     expect(createResponse.status).toBe(201);
@@ -58,6 +62,10 @@ describe('Event API contract', () => {
         eventDate: '2027-07-21T18:00:00.000Z',
         maxCapacity: 120,
         currentRegistrations: 0,
+        category: 'Community',
+        location: 'Sunset Park, Los Angeles, CA',
+        price: 25,
+        imageUrl: 'https://picsum.photos/seed/community-meetup/800/600',
       },
     });
 

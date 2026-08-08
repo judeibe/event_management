@@ -1,6 +1,6 @@
-import type { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma} from "@/generated/prisma/client";
 
-import { prisma } from '../../db/client';
+import { prisma } from '@/db/client';
 
 export interface RegistrationEventEntity {
   readonly id: string;

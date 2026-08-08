@@ -1,6 +1,6 @@
 import type { RequestHandler } from 'express';
 
-import { ValidationError } from '../../shared/errors';
+import { ValidationError } from '@/shared/errors';
 import { PrismaEventRepository } from './event.repository';
 import { EventService } from './event.service';
 import { eventIdParamsSchema, mapEventToResponse, type CreateEventBody, type UpdateEventBody } from './event.types';
