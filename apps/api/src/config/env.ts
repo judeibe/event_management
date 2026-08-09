@@ -7,6 +7,7 @@ const envSchema = z.object({
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
   RATE_LIMIT_MAX_REQUESTS: z.coerce.number().int().positive().default(100),
   MAX_REQUEST_SIZE: z.string().min(1).default('100kb'),
+  CORS_ALLOWED_ORIGINS: z.string().min(1).default('http://localhost:3001'),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);

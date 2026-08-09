@@ -55,6 +55,8 @@ const createRepositoryMock = (): RegistrationRepositoryMockBundle => {
     getOrCreateAttendeeByExternalRef: vi.fn(),
     findAttendeeByExternalRef: vi.fn(),
     findActiveRegistration: vi.fn(),
+    findRegistrationByEventAndAttendee: vi.fn(),
+    reactivateRegistration: vi.fn(),
     createRegistration: vi.fn(),
     incrementEventRegistrationsIfCapacityAvailable: vi.fn(),
     cancelRegistrationById: vi.fn(),
@@ -161,6 +163,42 @@ describe('RegistrationService', () => {
       ConflictError,
     );
     expect(transactionRepository.createRegistration).not.toHaveBeenCalled();
+  });
+
+  it('reactivates a cancelled registration instead of creating a new row', async () => {
+    const { repository, transactionRepository } = createRepositoryMock();
+    const event = buildEvent();
+    const attendee = buildAttendee();
+    const cancelledRegistration = buildRegistration({
+      status: 'CANCELLED',
+      cancelledAt: new Date('2026-01-02T00:00:00.000Z'),
+    });
+    const reactivatedRegistration = buildRegistration({ status: 'ACTIVE', cancelledAt: null });
+    const registrationWithAttendee = buildRegistrationWithAttendee({ status: 'ACTIVE', cancelledAt: null });
+
+    vi.mocked(transactionRepository.findEventById).mockResolvedValue(event);
+    vi.mocked(transactionRepository.getOrCreateAttendeeByExternalRef).mockResolvedValue(attendee);
+    vi.mocked(transactionRepository.findActiveRegistration).mockResolvedValue(null);
+    vi.mocked(transactionRepository.findRegistrationByEventAndAttendee).mockResolvedValue(
+      cancelledRegistration,
+    );
+    vi.mocked(transactionRepository.reactivateRegistration).mockResolvedValue(reactivatedRegistration);
+    vi.mocked(transactionRepository.incrementEventRegistrationsIfCapacityAvailable).mockResolvedValue(true);
+    vi.mocked(transactionRepository.findRegistrationById).mockResolvedValue(registrationWithAttendee);
+
+    const service = new RegistrationService(repository);
+
+    const result = await service.createRegistration(event.id, {
+      attendeeRef: attendee.externalRef,
+    });
+
+    expect(transactionRepository.findRegistrationByEventAndAttendee).toHaveBeenCalledWith(
+      event.id,
+      attendee.id,
+    );
+    expect(transactionRepository.reactivateRegistration).toHaveBeenCalledWith(cancelledRegistration.id);
+    expect(transactionRepository.createRegistration).not.toHaveBeenCalled();
+    expect(result).toEqual(registrationWithAttendee);
   });
 
   it('unregisters an active attendee registration and reconciles event occupancy', async () => {

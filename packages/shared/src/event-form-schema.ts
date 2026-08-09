@@ -27,7 +27,7 @@ export const eventFormValuesSchema = z.object({
     .number()
     .int('Capacity must be a whole number.')
     .positive('Capacity must be greater than zero.'),
-  imageUrl: z.string().trim().url('Enter a valid image URL.'),
+  imageUrl: z.string().trim().min(1, 'Image URL is required.').url('Enter a valid image URL.'),
 });
 
 export type EventFormValues = z.infer<typeof eventFormValuesSchema>;

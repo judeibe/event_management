@@ -38,6 +38,11 @@ export interface RegistrationTransactionRepository {
   getOrCreateAttendeeByExternalRef(externalRef: string): Promise<AttendeeEntity>;
   findAttendeeByExternalRef(externalRef: string): Promise<AttendeeEntity | null>;
   findActiveRegistration(eventId: string, attendeeId: string): Promise<RegistrationEntity | null>;
+  findRegistrationByEventAndAttendee(
+    eventId: string,
+    attendeeId: string,
+  ): Promise<RegistrationEntity | null>;
+  reactivateRegistration(registrationId: string): Promise<RegistrationEntity>;
   createRegistration(input: CreateRegistrationInput): Promise<RegistrationEntity>;
   incrementEventRegistrationsIfCapacityAvailable(eventId: string): Promise<boolean>;
   cancelRegistrationById(registrationId: string): Promise<RegistrationEntity>;
@@ -100,6 +105,30 @@ class PrismaRegistrationTransactionRepository implements RegistrationTransaction
         attendeeId,
         eventId,
         status: 'ACTIVE',
+      },
+    });
+  }
+
+  public async findRegistrationByEventAndAttendee(
+    eventId: string,
+    attendeeId: string,
+  ): Promise<RegistrationEntity | null> {
+    return this.client.registration.findUnique({
+      where: {
+        eventId_attendeeId: {
+          eventId,
+          attendeeId,
+        },
+      },
+    });
+  }
+
+  public async reactivateRegistration(registrationId: string): Promise<RegistrationEntity> {
+    return this.client.registration.update({
+      where: { id: registrationId },
+      data: {
+        status: 'ACTIVE',
+        cancelledAt: null,
       },
     });
   }

@@ -73,10 +73,21 @@ export class RegistrationService {
       });
     }
 
-    const registration = await repository.createRegistration({
-      attendeeId: attendee.id,
+    // A prior registration for this attendee/event pair may exist but be cancelled (the
+    // `@@unique([eventId, attendeeId])` constraint allows at most one row per pair, regardless of
+    // status). Reactivate it in place rather than inserting a new row, which would violate that
+    // constraint.
+    const existingRegistration = await repository.findRegistrationByEventAndAttendee(
       eventId,
-    });
+      attendee.id,
+    );
+
+    const registration = existingRegistration
+      ? await repository.reactivateRegistration(existingRegistration.id)
+      : await repository.createRegistration({
+          attendeeId: attendee.id,
+          eventId,
+        });
 
     const incremented = await repository.incrementEventRegistrationsIfCapacityAvailable(eventId);
 
