@@ -136,6 +136,7 @@ export async function updateEvent(
 
   revalidatePath("/admin/events")
   revalidatePath("/events")
+  revalidatePath(`/events/${eventId}`)
 
   return { ok: true, event: result.data }
 }
