@@ -24,7 +24,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
-import { EventThumbnail } from "@/components/admin/event-thumbnail"
+import { EventThumbnail } from "@/components/shared/event-thumbnail"
 import { createEvent, updateEvent } from "@/app/(admin)/admin/events/actions"
 
 const emptyDefaults: EventFormValues = {

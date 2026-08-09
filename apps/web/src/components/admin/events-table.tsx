@@ -20,7 +20,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { EventThumbnail } from "@/components/admin/event-thumbnail"
+import { EventThumbnail } from "@/components/shared/event-thumbnail"
 import { EventFormDialog } from "@/components/admin/event-form-dialog"
 import { DeleteEventDialog } from "@/components/admin/delete-event-dialog"
 import { MoreHorizontalIcon, PlusIcon, SquarePenIcon, TrashIcon } from "lucide-react"

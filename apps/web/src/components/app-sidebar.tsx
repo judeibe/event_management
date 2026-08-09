@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { CalendarDays, Settings2 } from "lucide-react"
+import { CalendarDays, Settings2, TicketIcon } from "lucide-react"
 
 import {
   Sidebar,
@@ -19,7 +19,10 @@ import {
 
 // No auth/authz gating (matches apps/api's current no-auth scope, spec FR-016) — both the
 // attendee-facing and admin nav groups are reachable to anyone with the URL.
-const attendeeNavItems = [{ title: "Events", url: "/events", icon: CalendarDays }]
+const attendeeNavItems = [
+  { title: "Events", url: "/events", icon: CalendarDays },
+  { title: "My Registrations", url: "/my-registrations", icon: TicketIcon },
+]
 
 const adminNavItems = [{ title: "Manage Events", url: "/admin/events", icon: Settings2 }]
 

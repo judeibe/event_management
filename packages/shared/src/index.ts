@@ -7,3 +7,8 @@ export {
   toEventRequestBody,
 } from './event-form-schema';
 export type { EventFormValues, EventRequestBody } from './event-form-schema';
+export {
+  registrationFormValuesSchema,
+  toRegistrationRequestBody,
+} from './registration-form-schema';
+export type { RegistrationFormValues, RegistrationRequestBody } from './registration-form-schema';
