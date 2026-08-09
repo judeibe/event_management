@@ -23,12 +23,14 @@
     "@event-management/shared": "workspace:*",
     "@prisma/adapter-better-sqlite3": "^7.9.1",
     "@prisma/client": "^7.9.1",
+    "cors": "^2.8.6",
     "express": "^5.2.1",
     "express-rate-limit": "7.4.1",
     "helmet": "7.1.0",
     "zod": "3.23.8"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^22.20.1",
     "@typescript-eslint/eslint-plugin": "^8.66.0",

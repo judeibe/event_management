@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation"
 import type { EventResponse } from "@event-management/shared"
 
 import { SiteHeader } from "@/components/site-header"
@@ -26,13 +27,23 @@ export default async function EventDetailPage(props: PageProps<"/events/[eventId
   const result = await apiClient.get<EventResponse>(`/events/${eventId}`)
 
   if (!result.ok) {
+    // Both a real 404 and a malformed/non-UUID eventId (400 VALIDATION_ERROR from apps/api's
+    // parseEventId) mean "there's no event to show at this link" — spec Edge Cases requires a
+    // syntactically odd ID to be handled the same as any other not-found ID. notFound() renders
+    // this segment's not-found.tsx and sets the response status to 404 (FR-006, FR-007).
+    // Anything else (an unexpected 5xx/network failure) is a real outage, not a missing event, so
+    // it keeps the old inline treatment rather than being misreported as "not found."
+    if (result.error.code === "NOT_FOUND" || result.error.code === "VALIDATION_ERROR") {
+      notFound()
+    }
+
     return (
       <>
         <SiteHeader title="Event" />
-        <div className="mx-auto mt-12 max-w-md p-4 text-center lg:p-6">
+        <div className="mx-auto mt-12 w-full max-w-md p-4 text-center lg:p-6">
           <Card>
             <CardHeader>
-              <CardTitle>{result.error.code === "NOT_FOUND" ? "Event not found" : "Couldn't load this event"}</CardTitle>
+              <CardTitle>Couldn&apos;t load this event</CardTitle>
               <CardDescription>{result.error.message}</CardDescription>
             </CardHeader>
           </Card>

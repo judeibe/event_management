@@ -122,4 +122,32 @@ describe('Event API contract', () => {
     expect(response.status).toBe(400);
     expect(response.body.error.code).toBe('VALIDATION_ERROR');
   });
+
+  it('sends an Access-Control-Allow-Origin header for an allow-listed browser origin', async () => {
+    const event = await request(app).post('/events').send({
+      title: 'CORS check event',
+      description: 'Event used to check CORS headers',
+      eventDate: '2027-07-21T18:00:00.000Z',
+      maxCapacity: 10,
+      category: 'Community',
+      location: 'Sunset Park, Los Angeles, CA',
+      price: 0,
+      imageUrl: 'https://picsum.photos/seed/cors-check-event/800/600',
+    });
+    const eventId = event.body.data.id as string;
+
+    const allowedResponse = await request(app)
+      .get(`/events/${eventId}`)
+      .set('Origin', 'http://localhost:3001');
+
+    expect(allowedResponse.status).toBe(200);
+    expect(allowedResponse.headers['access-control-allow-origin']).toBe('http://localhost:3001');
+
+    const disallowedResponse = await request(app)
+      .get(`/events/${eventId}`)
+      .set('Origin', 'http://evil.example');
+
+    expect(disallowedResponse.status).toBe(200);
+    expect(disallowedResponse.headers['access-control-allow-origin']).toBeUndefined();
+  });
 });

@@ -1,12 +1,12 @@
 "use client"
 
 import Link from "next/link"
-import type { EventResponse } from "@event-management/shared"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardAction, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { CancelRegistrationDialog } from "@/components/dashboard/cancel-registration-dialog"
+import type { LiveEventState } from "@/components/dashboard/my-registrations-list"
 import { removeMyRegistration, type MyRegistrationRecord } from "@/lib/my-registrations"
 
 function formatEventDate(dateString: string) {
@@ -23,13 +23,15 @@ export function MyRegistrationListItem({
   liveEvent,
 }: {
   record: MyRegistrationRecord
-  /** undefined = still refreshing from the API, null = event no longer exists (research.md #6) */
-  liveEvent: EventResponse | null | undefined
+  /** undefined = still refreshing from the API. Only 'not-found' means genuinely deleted (FR-005) —
+   * 'unreachable' falls back to the snapshot exactly like 'undefined' does. */
+  liveEvent: LiveEventState | undefined
 }) {
-  const title = liveEvent?.title ?? record.eventSnapshot.title
-  const eventDate = liveEvent?.eventDate ?? record.eventSnapshot.eventDate
-  const location = liveEvent?.location ?? record.eventSnapshot.location
-  const isDeleted = liveEvent === null
+  const liveEventData = liveEvent?.status === "ok" ? liveEvent.event : undefined
+  const title = liveEventData?.title ?? record.eventSnapshot.title
+  const eventDate = liveEventData?.eventDate ?? record.eventSnapshot.eventDate
+  const location = liveEventData?.location ?? record.eventSnapshot.location
+  const isDeleted = liveEvent?.status === "not-found"
 
   return (
     <Card>

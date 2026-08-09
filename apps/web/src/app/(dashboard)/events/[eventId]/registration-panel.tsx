@@ -12,13 +12,16 @@ import { getMyRegistrationForEvent, subscribeMyRegistrations } from "@/lib/my-re
 // The detail page itself is a Server Component (it fetches the event), but "am I already
 // registered on this device" can only be answered from localStorage — hence this client boundary,
 // which decides between RegisterForm / AlreadyRegisteredCard / a closed notice (FR-004, FR-007).
-// useSyncExternalStore (not useEffect+setState) both keeps this reactive to the store's own writes
-// (register/cancel elsewhere update this instantly) and is SSR/hydration-safe out of the box.
+// useSyncExternalStore (not useEffect+setState) keeps this reactive to the store's own writes
+// (register/cancel elsewhere update this instantly). getServerSnapshot always returns `undefined`
+// (never reads localStorage) so it matches what real SSR renders (window is undefined there) —
+// getServerSnapshot also runs in the browser during hydration, so reading storage there would
+// mismatch the server's actual output and throw a hydration error.
 export function RegistrationPanel({ event }: { event: EventResponse }) {
   const existingRegistration = useSyncExternalStore(
     subscribeMyRegistrations,
     () => getMyRegistrationForEvent(event.id),
-    () => getMyRegistrationForEvent(event.id)
+    () => undefined
   )
 
   if (existingRegistration) {

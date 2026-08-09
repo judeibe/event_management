@@ -170,6 +170,58 @@ describe('Registration API contract', () => {
     expect(registration?.cancelledAt).toBeTruthy();
   });
 
+  it('allows registering again after cancelling, repeatedly, reusing the same registration row', async () => {
+    const event = await createEvent('2030-07-21T18:00:00.000Z', 3);
+    const attendeeRef = 'attendee-rejoin@example.com';
+
+    const firstRegistration = await request(app).post(`/events/${event.id}/registrations`).send({
+      attendeeRef,
+    });
+    expect(firstRegistration.status).toBe(201);
+    const registrationId = firstRegistration.body.data.id as string;
+
+    for (let cycle = 0; cycle < 2; cycle += 1) {
+      const cancelResponse = await request(app).delete(
+        `/events/${event.id}/registrations/${encodeURIComponent(attendeeRef)}`,
+      );
+      expect(cancelResponse.status).toBe(204);
+
+      const reRegisterResponse = await request(app).post(`/events/${event.id}/registrations`).send({
+        attendeeRef,
+      });
+
+      expect(reRegisterResponse.status).toBe(201);
+      expect(reRegisterResponse.body).toMatchObject({
+        data: {
+          id: registrationId,
+          eventId: event.id,
+          attendeeRef,
+          status: 'ACTIVE',
+        },
+      });
+    }
+
+    const storedEvent = await prisma.event.findUnique({ where: { id: event.id } });
+    expect(storedEvent?.currentRegistrations).toBe(1);
+  });
+
+  it('still rejects a duplicate registration while the existing registration is active', async () => {
+    const event = await createEvent('2030-07-21T18:00:00.000Z', 3);
+    const attendeeRef = 'attendee-active-dup@example.com';
+
+    const firstRegistration = await request(app).post(`/events/${event.id}/registrations`).send({
+      attendeeRef,
+    });
+    expect(firstRegistration.status).toBe(201);
+
+    const secondRegistration = await request(app).post(`/events/${event.id}/registrations`).send({
+      attendeeRef,
+    });
+
+    expect(secondRegistration.status).toBe(409);
+    expect(secondRegistration.body.error.code).toBe('CONFLICT');
+  });
+
   it('returns 404 when attempting to unregister a non-existent active registration', async () => {
     const event = await createEvent('2030-07-21T18:00:00.000Z', 3);
 

@@ -1,6 +1,8 @@
 import express, { type Express } from 'express';
+import cors from 'cors';
 import helmet from 'helmet';
 
+import { corsPolicy } from '@/config/cors-policy';
 import { errorHandler, notFoundHandler } from '@/middleware/error-handler';
 import { rateLimitMiddleware } from '@/middleware/rate-limit';
 import { requestSizeMiddleware } from '@/middleware/request-size';
@@ -12,6 +14,11 @@ export const createApp = (): Express => {
 
   app.disable('x-powered-by');
   app.use(helmet());
+  app.use(
+    cors({
+      origin: [...corsPolicy.allowedOrigins],
+    }),
+  );
   app.use(requestSizeMiddleware);
   app.use(rateLimitMiddleware);
 
